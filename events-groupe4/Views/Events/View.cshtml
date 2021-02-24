@@ -1,0 +1,40 @@
+﻿@model PortailEventSportifCulturel.Core.Model.ViewModel.EventListViewModel
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<h1> Liste des évenements  </h1>
+
+
+
+
+
+    @foreach (var item in Model.Events)
+    {
+        <div class="col-md-4" style="height:320px; padding:10px ;margin :10px; border:solid thin solid">
+            <div class="col-md-12">
+                <img style=" box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)" src=" ~/Photos/@item.Photo"   class="img-responsive"/>
+            </div>
+            <div class="col-md-12">
+                <stong style=" font-size: 28px;">@Html.ActionLink(item.Titre, "Details", new { id = item.Id }, htmlAttributes: new { @class = "control-label col-md-2" })</stong>
+            </div>
+
+            <div class="col-md-12">
+                <stong > @item.description </stong>
+            </div>
+
+            <div class="col-md-12">
+                <stong> @item.DateDebut </stong>
+            </div>
+
+
+            <div class="col-md-12">
+                <a href="/Events/Details/@item.Id" class="btn btn-default " style="border-radius: 8px;background-color: #f44336;box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)"> 
+                
+                <strong style=" color: white">Voir Détail </strong></a>
+            </div>
+
+        </div>
+    }
+

@@ -1,0 +1,48 @@
+﻿@model events_groupe4.Models.Event
+
+@{
+
+    ViewBag.Title = Model.Titre + "Details";
+}
+
+<h2>Détail de l'événement @Html.DisplayFor(model => model.Titre)</h2>
+
+<div class="container">
+    <div class="col-md-4">
+        <h1>
+            @Html.DisplayNameFor(model => model.Titre) :  @Html.DisplayFor(model => model.Titre)
+        </h1>
+    </div>
+    <div ="col-md-2">
+        <img class="img-responsive" src=" ~/Photos/@Model.Photo" style=" box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)" class="img-responsive" />
+    </div>
+    <hr />
+    <div ="col-md-2">
+        <strong>@Html.DisplayFor(model => model.description) </strong>
+    </div>
+
+    <div ="col-md-2">
+        <strong>l'événement est crée le :  @Html.DisplayFor(model => model.DateFin) </strong>
+    </div>
+</div>
+
+
+<br />
+
+<div class="row">
+    <div class="col-sm-7">
+        <a href="/Events/Edit/@Model.Id" class="btn btn-default " style="border-radius: 8px;background-color: #f44336;box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)">
+            <strong style=" color: white">
+                S'inscrire
+            </strong>
+        </a>
+    </div>
+</div>
+
+<br />
+<br />
+<br />
+<div class="row">
+
+    <div class="col-md-8"> <strong>    @Html.ActionLink("Retour à la liste des évenement", "Index")  </strong> </div>
+</div>
