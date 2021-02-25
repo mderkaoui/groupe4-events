@@ -89,10 +89,6 @@ namespace events_groupe4.Controllers
         }
 
 
-
-
-
-
         [HttpGet]
         [Route("Edit/{id}")]
         public ActionResult Edit(int? id)

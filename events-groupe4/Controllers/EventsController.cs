@@ -1,5 +1,7 @@
-﻿using events_groupe4.Models;
+﻿using events_groupe4.Filters;
+using events_groupe4.Models;
 using events_groupe4.Repositories;
+using events_groupe4.Services;
 using events_groupe4.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -16,11 +18,24 @@ namespace events_groupe4.Controllers
     {
         private MyContext db = new MyContext();
 
+        private IEventService eventSce;
+
         // GET: Events
+
+        public EventsController()
+        {
+            eventSce = new EventService(new EventRepository(db));
+        }
+
+
+       // [RolesFilter(UserRole.ADMIN)]
         public ActionResult Index()
         {
-            var events = db.Events.ToList(); // Include(@ => @.categorie);
-            return View(events);
+            //var events = db.Events.ToList(); // Include(@ => @.categorie);
+            //return View(events);
+            var lstEvent= eventSce.FindAll(1, 15, "");
+
+            return View("Index", lstEvent);
         }
 
         // GET: Events/Details/5
@@ -30,7 +45,7 @@ namespace events_groupe4.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Event @event = db.Events.Find(id);
+            Event @event = eventSce.Find(id);
             if (@event == null)
             {
                 return HttpNotFound();
@@ -38,17 +53,27 @@ namespace events_groupe4.Controllers
             return View(@event);
         }
 
-        // GET: Events/Create
+
+        [HttpGet]
+        [Route("CreateEvent")]
         public ActionResult Create()
         {
             ViewBag.categorieId = new SelectList(db.Categories, "Id", "Libelle");
-            return View();
+            return View("Create", new Event());
         }
 
-        // POST: Events/Create
-        // Afin de déjouer les attaques par survalidation, activez les propriétés spécifiques auxquelles vous voulez établir une liaison. Pour 
-        // plus de détails, consultez https://go.microsoft.com/fwlink/?LinkId=317598.
+
+
+        // GET: Events/Create
+        //public ActionResult Create()
+        //{
+        //    ViewBag.categorieId = new SelectList(db.Categories, "Id", "Libelle");
+        //    return View();
+        //}
+
+      
         [HttpPost]
+        [Route("CreateEvent")]
         [ValidateAntiForgeryToken] //[Bind(Include = "Id,Titre,description,DateDebut,DateFin,publie,categorieId")]
         public ActionResult Create([Bind(Exclude = "Photo")] Event @event, HttpPostedFileBase photo)
         {
@@ -76,14 +101,17 @@ namespace events_groupe4.Controllers
             return View(@event);
         }
 
-        // GET: Events/Edit/5
+
+        [HttpGet]
+        [Route("EditEvent/{id}")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Event @event = db.Events.Find(id);
+            Event @event = eventSce.Find(id);
+
             if (@event == null)
             {
                 return HttpNotFound();
@@ -92,31 +120,36 @@ namespace events_groupe4.Controllers
             return View(@event);
         }
 
-        // POST: Events/Edit/5
-        // Afin de déjouer les attaques par survalidation, activez les propriétés spécifiques auxquelles vous voulez établir une liaison. Pour 
-        // plus de détails, consultez https://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
+        [Route("EditEvent/{id}")]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Titre,description,DateDebut,DateFin,publie,categorieId")] Event @event)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(@event).State = EntityState.Modified;
-                db.SaveChanges();
+               // db.Entry(@event).State = EntityState.Modified;
+                eventSce.Update(@event);
+              //  db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.categorieId = new SelectList(db.Categories, "Id", "Libelle", @event.categorieId);
+            //ViewBag.categorieId = new SelectList(db.Categories, "Id", "Libelle", @event.categorieId);
             return View(@event);
         }
 
+
+
         // GET: Events/Delete/5
+        [HttpGet]
+        [Route("DeleteEvent/{id}")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Event @event = db.Events.Find(id);
+            Event @event = eventSce.Find(id);
+            //Event @event = db.Events.Find(id);
             if (@event == null)
             {
                 return HttpNotFound();
@@ -127,11 +160,10 @@ namespace events_groupe4.Controllers
         // POST: Events/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Route("DeleteEventConf/{id}")]
         public ActionResult DeleteConfirmed(int id)
         {
-            Event @event = db.Events.Find(id);
-            db.Events.Remove(@event);
-            db.SaveChanges();
+            eventSce.Remove(id);
             return RedirectToAction("Index");
         }
 
@@ -144,12 +176,11 @@ namespace events_groupe4.Controllers
             base.Dispose(disposing);
         }
 
+   
         public new ActionResult View()
         {
             List<Event> events;
-
             events = db.Events.ToList();
-
             EventListViewModel viewModel = new EventListViewModel();
             viewModel.Events = events;
             //  viewModel.ProductsCategory = Categories;
