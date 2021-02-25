@@ -7,12 +7,12 @@ using System.Web;
 
 namespace events_groupe4.Repositories
 {
-    public class CategorieRepository : ICategorieRepository
+    public class ArticleRepository : ICategorieRepository
     {
 
         private MyContext db;
 
-        public CategorieRepository(MyContext db)
+        public ArticleRepository(MyContext db)
         {
             this.db = db;
         }

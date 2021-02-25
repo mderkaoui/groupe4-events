@@ -17,7 +17,7 @@ namespace events_groupe4.Controllers
 
         public CategorieController()
         {
-            categSce = new CategorieService(new CategorieRepository(db));
+            categSce = new CategorieService(new ArticleRepository(db));
         }
 
 
